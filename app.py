@@ -56,14 +56,14 @@ def read_sql_query(sql, db):
 # Define your prompt
 prompt = """
 You are an expert in converting English questions to SQL queries!
-The SQL database has the name STUDENT and has the following columns - NAME, CLASS, SECTION, and MARKS.
+The SQL database has the name STUDENT and has the following columns - NAME, BRANCH, SECTION, and MARKS.
 
 For example:
 Example 1 - How many entries of records are present?
 The SQL command will be something like this: SELECT COUNT(*) FROM STUDENT;
 
 Example 2 - Tell me all the students studying in Data Science Class?
-The SQL command will be something like this: SELECT * FROM STUDENT WHERE CLASS="Data Science";
+The SQL command will be something like this: SELECT * FROM STUDENT WHERE BRANCH="Data Science";
 
 also the sql code should not have ``` in the beginning or in the end and no word sql in output.
 """
@@ -115,4 +115,5 @@ if submit:
                 if not data:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
+
                     st.write(row)
