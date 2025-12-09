@@ -5,7 +5,7 @@ import streamlit as st
 import os
 import sqlite3 
 import google.generativeai as genAi
-
+from google.api_core.exceptions import ResourceExhausted
 # Configure the API key
 api_key = os.getenv("GOOGLE_API_KEY")
 genAi.configure(api_key=api_key)
@@ -117,3 +117,4 @@ if submit:
                 for row in data:
 
                     st.write(row)
+
