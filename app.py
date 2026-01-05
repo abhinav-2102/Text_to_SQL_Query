@@ -21,28 +21,55 @@ if not api_key:
 
 genAi.configure(api_key=api_key)
 
-# --- Automatically find a working model ---
-#def get_available_model():
-   # """Finds the first available text generation model for your key."""
-   # try:
-       # for m in genAi.list_models():
-           # if 'generateContent' in m.supported_generation_methods:
-                #if 'gemini-1.5-flash' in m.name:
-                   # return m.name
-                #return m.name
-    #except Exception as e:
-        #return None
-    #return None*/
-
-# Function to load google gemini model
 def get_gemini_response(question, prompt):
-    # Hardcoding the model is faster and more reliable than listing them every time
     try:
-        model = genAi.GenerativeModel('gemini-pro')
+        # 1. List all models available to your API key
+        available_models = []
+        for m in genAi.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                available_models.append(m.name)
+        
+        # DEBUG: Print found models to the Streamlit UI so we can see what's happening
+        if not available_models:
+            return "Error: API Key is valid, but no text-generation models were found. (Check API permissions)"
+        
+        # 2. Priority selection: Try to find 'flash' first, then 'pro', then '1.0'
+        chosen_model = None
+        for model in available_models:
+            if 'gemini-1.5-flash' in model:
+                chosen_model = model
+                break
+        
+        if not chosen_model:
+            for model in available_models:
+                if 'gemini-pro' in model:
+                    chosen_model = model
+                    break
+        
+        # 3. Fallback: If preferences aren't found, just pick the first valid one
+        if not chosen_model:
+            chosen_model = available_models[0]
+
+        # Display the chosen model (Optional debugging info)
+        # st.write(f"Debug: Using model -> {chosen_model}") 
+
+        # 4. Generate Content
+        model = genAi.GenerativeModel(chosen_model)
         response = model.generate_content([prompt, question])
         return response.text
+
     except Exception as e:
-        return f"Error generating content: {e}"
+        return f"Error using model {chosen_model if 'chosen_model' in locals() else 'Unknown'}: {e}"
+
+# Function to load google gemini model
+#def get_gemini_response(question, prompt):
+    # Hardcoding the model is faster and more reliable than listing them every time
+    #try:
+        #model = genAi.GenerativeModel('gemini-pro')
+        #response = model.generate_content([prompt, question])
+        #return response.text
+    #except Exception as e:
+        #return f"Error generating content: {e}"
 
 # Function to retrieve query from the sql db
 def read_sql_query(sql, db):
@@ -123,6 +150,7 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
 
 
