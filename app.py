@@ -38,7 +38,7 @@ genAi.configure(api_key=api_key)
 def get_gemini_response(question, prompt):
     # Hardcoding the model is faster and more reliable than listing them every time
     try:
-        model = genAi.GenerativeModel('gemini-1.5-flash')
+        model = genAi.GenerativeModel('gemini-pro')
         response = model.generate_content([prompt, question])
         return response.text
     except Exception as e:
@@ -123,6 +123,7 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
 
 
