@@ -19,7 +19,7 @@ if not api_key:
         st.error("API Key not found. Please set GOOGLE_API_KEY in your .env file (local) or Streamlit Secrets (cloud).")
         st.stop()
 
-genAi.configure(api_key=api_key))
+genAi.configure(api_key=api_key)
 
 # --- Automatically find a working model ---
 #def get_available_model():
@@ -123,5 +123,6 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
 
