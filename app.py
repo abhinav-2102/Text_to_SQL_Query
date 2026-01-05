@@ -6,7 +6,7 @@ import os
 import sqlite3
 import google.generativeai as genAi
 from google.api_core.exceptions import ResourceExhausted
-
+st.sidebar.error(f"Using Library Version: {genAi.__version__}")
 # Configure the API key
 # Try to get it from environment (local), otherwise from streamlit secrets (cloud)
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -109,6 +109,7 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
 
 
