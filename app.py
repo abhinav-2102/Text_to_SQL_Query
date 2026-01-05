@@ -22,28 +22,27 @@ if not api_key:
 genAi.configure(api_key=api_key))
 
 # --- Automatically find a working model ---
-def get_available_model():
-    """Finds the first available text generation model for your key."""
-    try:
-        for m in genAi.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                if 'gemini-1.5-flash' in m.name:
-                    return m.name
-                return m.name
-    except Exception as e:
-        return None
-    return None
+#def get_available_model():
+   # """Finds the first available text generation model for your key."""
+   # try:
+       # for m in genAi.list_models():
+           # if 'generateContent' in m.supported_generation_methods:
+                #if 'gemini-1.5-flash' in m.name:
+                   # return m.name
+                #return m.name
+    #except Exception as e:
+        #return None
+    #return None*/
 
 # Function to load google gemini model
 def get_gemini_response(question, prompt):
-    model_name = get_available_model()
-    
-    if not model_name:
-        return "Error: No suitable model found. Please enable 'Google Generative Language API' in your Cloud Console."
-
-    model = genAi.GenerativeModel(model_name)
-    response = model.generate_content([prompt, question])
-    return response.text
+    # Hardcoding the model is faster and more reliable than listing them every time
+    try:
+        model = genAi.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content([prompt, question])
+        return response.text
+    except Exception as e:
+        return f"Error generating content: {e}"
 
 # Function to retrieve query from the sql db
 def read_sql_query(sql, db):
@@ -124,4 +123,5 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
