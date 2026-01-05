@@ -22,32 +22,14 @@ if not api_key:
 genAi.configure(api_key=api_key)
 
 def get_gemini_response(question, prompt):
+    # We use gemini-2.5-flash because your diagnostic test proved 
+    # this is the model your API Key has access to.
     try:
-        # 1. Ask Google: "What models can this API key use?"
-        available = []
-        for m in genAi.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                available.append(m.name)
-        
-        # 2. Print the list to the UI so we can debug
-        st.warning(f"MODELS VISIBLE TO KEY: {available}")
-        
-        # 3. Try to use Flash if available, otherwise just pick the first one
-        if 'models/gemini-1.5-flash' in available:
-            model = genAi.GenerativeModel('gemini-1.5-flash')
-        elif available:
-            # Fallback to whatever is actually there
-            first_model = available[0].split('/')[-1] # remove 'models/' prefix
-            st.info(f"Flash not found. Falling back to: {first_model}")
-            model = genAi.GenerativeModel(first_model)
-        else:
-            return "Error: Your API Key has access to 0 models. Create a new key in a NEW project."
-
+        model = genAi.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content([prompt, question])
         return response.text
-
     except Exception as e:
-        return f"Final Error: {e}"
+        return f"Error: {e}"
 def read_sql_query(sql, db):
     conn = sqlite3.connect(db)
     cur = conn.cursor()
@@ -126,6 +108,7 @@ if submit:
                     st.warning("No data found or SQL query failed.")
                 for row in data:
                     st.write(row)
+
 
 
 
